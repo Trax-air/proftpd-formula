@@ -1,0 +1,39 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.hostname = "traxair-ftp-local"
+  # Official Ubuntu 14.04 LTS cloud image
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.network "forwarded_port", guest: 21, host: 21
+  config.vm.network "forwarded_port", guest: 22, host: 22
+  config.vm.network "forwarded_port", guest: 20, host: 20
+  config.vm.network "forwarded_port", guest: 49153, host: 49153
+  config.vm.network "forwarded_port", guest: 49154, host: 49154
+  
+  
+  # Enable SSH agent forwarding
+  config.ssh.forward_agent = true
+  # config.ssh.username = "vagrant"
+  # config.ssh.password = "vagrant"
+
+  # Virtualbox-specific configuration
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--memory", "1000"]
+  end
+
+  # Provision using Salt
+  config.vm.boot_timeout = 2000
+  config.vm.synced_folder "../../pillar/", "/srv/pillar/"
+  config.vm.synced_folder "../../formulas/", "/srv/formulas/"
+  config.vm.synced_folder "../../roots/", "/srv/salt/"
+  # Same as Pillar
+  config.vm.provision :salt do |salt|
+    salt.minion_config = "../minion"
+    salt.run_highstate = true
+    salt.verbose = true
+  end
+end
