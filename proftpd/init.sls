@@ -45,6 +45,7 @@ proftpd:
             User: {{ salt['pillar.get']('proftpd:User') }}
             Group: {{ salt['pillar.get']('proftpd:Group') }}
             Umask: {{ salt['pillar.get']('proftpd:Umask') }}
+            UseFtpUsers: {{ salt['pillar.get']('proftpd:UseFtpUsers') }}
             DefaultRoot: {{ salt['pillar.get']('proftpd:DefaultRoot') }}
             DenyFilter: {{ salt['pillar.get']('proftpd:DenyFilter') }}
             DirUmask: {{ salt['pillar.get']('proftpd:DirUmask') }}
